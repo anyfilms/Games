@@ -230,69 +230,44 @@
     </style>
 </head>
 <body>
-    <!-- हेडर और सर्च बार -->
     <header class="header">
         <div class="search-container">
             <input type="text" class="search-box" id="search-box" placeholder="वीडियो खोजें...">
         </div>
     </header>
 
-    <!-- मुख्य कंटेंट - वीडियो ग्रिड -->
     <main class="main-content">
         <div class="video-grid" id="video-grid">
-            <!-- वीडियो कार्ड यहाँ जनरेट होंगे -->
-        </div>
+            </div>
     </main>
 
-    <!-- फुल स्क्रीन वीडियो प्लेयर -->
     <div class="video-player-fullscreen" id="video-player">
         <div class="player-header">
             <div class="player-title" id="player-title"></div>
             <button class="close-btn" id="close-video-btn">✕</button>
         </div>
         <div class="video-container" id="video-container">
-            <!-- यहाँ वीडियो लोड होगी -->
-        </div>
+            </div>
     </div>
 
     <script>
-        // वीडियो डेटा - 5 अलग-अलग वीडियो (उदाहरण के लिए)
+        // वीडियो डेटा - आपके नए Hugging Face लिंक के साथ अपडेट किया गया
         const videoData = [
             {
-                id: 1,
-                title: "बेचारी लड़की और उसकी दोस्त ने सबसे अमीर CEO भाइयों से शादी की! अब वे लाड़-प्यार में डूबी हुई हैं!",
-                videoUrl: "https://www.youtube.com/watch?v=2Rc6zE875u8",
-                thumbnail: "https://i.ytimg.com/vi/EvmNyS8YJK4/maxresdefault.jpg",
-                type: "youtube"
-            },
-            {
                 id: 2,
-                title: "गीतहब से उदाहरण वीडियो - संगीत प्रदर्शन",
-                videoUrl: "https://example.com/videos/songhub-example.mp4",
+                title: "Hugging Face वीडियो - एपिसोड 1",
+                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/1.mp4",
                 thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
                 type: "direct"
             },
             {
-                id: 3,
-                title: "यूट्यूब शॉर्ट वीडियो - मनोरंजक क्लिप",
-                videoUrl: "https://www.youtube.com/shorts/example123",
-                thumbnail: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                type: "youtube"
-            },
-            {
-                id: 4,
-                title: "प्रेरणादायक भाषण - सफलता की कहानी",
-                videoUrl: "https://example.com/videos/inspirational-speech.mp4",
-                thumbnail: "https://images.unsplash.com/photo-1552674605-db6ffd8facb5?ixlib=rb-4.0.3&auto=format&fit=crop&w-800&q=80",
+                id: 2,
+                title: "Hugging Face वीडियो - एपिसोड 1",
+                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/1.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
                 type: "direct"
             },
-            {
-                id: 5,
-                title: "यूट्यूब ट्यूटोरियल - वेब डेवलपमेंट सीखें",
-                videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                type: "youtube"
-            }
+            
         ];
         
         // DOM एलिमेंट्स
@@ -305,10 +280,8 @@
         
         // यूट्यूब वीडियो URL को एम्बेड URL में बदलने का फंक्शन
         function convertToEmbedUrl(url) {
-            // नियमित यूट्यूब URL
             let videoId = '';
             
-            // https://www.youtube.com/watch?v=VIDEO_ID
             if (url.includes('youtube.com/watch?v=')) {
                 videoId = url.split('v=')[1];
                 const ampersandPosition = videoId.indexOf('&');
@@ -316,7 +289,6 @@
                     videoId = videoId.substring(0, ampersandPosition);
                 }
             }
-            // https://youtu.be/VIDEO_ID
             else if (url.includes('youtu.be/')) {
                 videoId = url.split('youtu.be/')[1];
                 const questionMarkPosition = videoId.indexOf('?');
@@ -324,7 +296,6 @@
                     videoId = videoId.substring(0, questionMarkPosition);
                 }
             }
-            // YouTube Shorts URL
             else if (url.includes('youtube.com/shorts/')) {
                 videoId = url.split('shorts/')[1];
                 const questionMarkPosition = videoId.indexOf('?');
@@ -337,11 +308,9 @@
                 return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&controls=0&showinfo=0&modestbranding=1`;
             }
             
-            // यदि YouTube URL नहीं है, तो मूल URL वापस करें
             return url;
         }
         
-        // वीडियो के प्रकार का पता लगाने का फंक्शन
         function detectVideoType(url) {
             if (url.includes('youtube.com') || url.includes('youtu.be')) {
                 return 'youtube';
@@ -350,7 +319,6 @@
             }
         }
         
-        // वीडियो ग्रिड जनरेट करें
         function generateVideoGrid(videos = videoData) {
             videoGrid.innerHTML = '';
             
@@ -371,16 +339,13 @@
             });
         }
         
-        // वीडियो प्ले करें
         function playVideo(video) {
-            // वीडियो कंटेनर को खाली करें
             videoContainer.innerHTML = '';
             playerTitle.textContent = video.title;
             
             let videoElement;
             
             if (video.type === 'youtube' || detectVideoType(video.videoUrl) === 'youtube') {
-                // यूट्यूब वीडियो के लिए
                 const embedUrl = convertToEmbedUrl(video.videoUrl);
                 videoElement = document.createElement('iframe');
                 videoElement.className = 'youtube-video';
@@ -389,43 +354,36 @@
                 videoElement.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
                 videoElement.allowFullscreen = true;
             } else {
-                // डायरेक्ट वीडियो फ़ाइल के लिए (MP4, WebM, etc.)
                 videoElement = document.createElement('video');
                 videoElement.className = 'direct-video';
                 videoElement.src = video.videoUrl;
                 videoElement.autoplay = true;
-                videoElement.controls = false;
+                videoElement.controls = true;
                 videoElement.playsInline = true;
                 
-                // वीडियो एरर हैंडलिंग
                 videoElement.addEventListener('error', () => {
                     videoContainer.innerHTML = `
                         <div style="text-align: center; padding: 20px;">
                             <h3>वीडियो लोड नहीं हो पाई</h3>
-                            <p>वीडियो URL: ${video.videoUrl}</p>
-                            <p>कृपया सुनिश्चित करें कि वीडियो URL सही है और सार्वजनिक रूप से एक्सेसिबल है।</p>
+                            <p>कृपया सुनिश्चित करें कि Hugging Face पर आपकी रिपॉजिटरी Public है।</p>
                         </div>
                     `;
                 });
             }
             
             videoContainer.appendChild(videoElement);
-            
-            // फुलस्क्रीन प्लेयर दिखाएं
             videoPlayer.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
         
-        // वीडियो प्लेयर बंद करें
         function closeVideoPlayer() {
             videoPlayer.style.display = 'none';
             videoContainer.innerHTML = '';
             document.body.style.overflow = 'auto';
             
-            // सभी वीडियो को पॉज करें
             const iframes = document.querySelectorAll('iframe');
             iframes.forEach(iframe => {
-                iframe.src = iframe.src; // रीसेट करने के लिए
+                iframe.src = iframe.src;
             });
             
             const videos = document.querySelectorAll('video');
@@ -435,7 +393,6 @@
             });
         }
         
-        // सर्च फ़ंक्शन
         function searchVideos() {
             const searchTerm = searchBox.value.toLowerCase().trim();
             
@@ -451,7 +408,6 @@
             generateVideoGrid(filteredVideos);
         }
         
-        // नया वीडियो जोड़ने का फंक्शन
         function addNewVideo(title, videoUrl, thumbnailUrl) {
             const newVideo = {
                 id: videoData.length + 1,
@@ -467,25 +423,17 @@
             return newVideo;
         }
         
-        // इनिशियलाइज़ेशन
         function init() {
-            // वीडियो ग्रिड जनरेट करें
             generateVideoGrid();
-            
-            // इवेंट लिसनर्स
             closeVideoBtn.addEventListener('click', closeVideoPlayer);
-            
-            // सर्च बॉक्स में टाइप करते ही सर्च करें
             searchBox.addEventListener('input', searchVideos);
             
-            // ESC की दबाने पर वीडियो बंद करें
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     closeVideoPlayer();
                 }
             });
             
-            // वीडियो प्लेयर के बाहर क्लिक करने पर बंद करें
             videoPlayer.addEventListener('click', (e) => {
                 if (e.target === videoPlayer) {
                     closeVideoPlayer();
@@ -493,14 +441,8 @@
             });
         }
         
-        // पेज लोड होने पर इनिशियलाइज़ करें
         document.addEventListener('DOMContentLoaded', init);
-        
-        // ग्लोबल फंक्शन बनाएं ताकि आप बाद में नए वीडियो जोड़ सकें
         window.addVideo = addNewVideo;
-        
-        // उदाहरण: नया वीडियो जोड़ने के लिए
-        // window.addVideo("नया वीडियो टाइटल", "https://www.youtube.com/watch?v=EXAMPLE", "https://example.com/thumbnail.jpg");
     </script>
 </body>
 </html>
