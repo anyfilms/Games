@@ -1,41 +1,257 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <head><meta name="google-site-verification" content="_FY5aISiZJWYHeTGmP5DvnIkPLF8JuNGT-MWPjDNOKI" />
-    <script src="https://contentblanksupersede.com/d0/c3/65/d0c3656efbf6db91a4b0f9c3fc0b4530.js"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>#</title>
-
-    <meta name="description" content="#">
-    <meta name="keywords" content="#">
-    <meta name="author" content="">
-
-    <link rel="icon" type="image/x-icon" href="#">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>वीडियो प्लेयर</title>
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            position: absolute;
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            background-color: #111;
+            padding: 15px;
+            z-index: 100;
+            border-bottom: 1px solid #333;
         }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 25px;
+            background-color: #222;
+            border: 1px solid #333;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .main-content {
+            margin-top: 70px;
+            padding: 10px;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .video-card {
+            background-color: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .thumbnail-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .video-title {
+            padding: 12px;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* प्लेयर को बेहतर बनाने के लिए CSS सुधार */
+        .video-player-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .player-header {
+            padding: 15px;
+            background-color: #111;
+            display: flex;
+            align-items: center;
+            z-index: 1001;
+        }
+        
+        .player-title {
+            flex: 1;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .close-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .video-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* बाहर निकलने से रोकेगा */
+        }
+        
+        /* वीडियो फिटिंग के लिए मुख्य सेटिंग */
+        .direct-video, .youtube-video {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        @media (min-width: 480px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 768px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
     </style>
 </head>
 <body>
 
-    <iframe src="https://tfpdl.github.io/"></iframe>
-    <script src="https://contentblanksupersede.com/f8/4b/c6/f84bc63c5ac45353bb3eabb3cd41a7c4.js"></script>
+    <header class="header">
+        <div class="search-container">
+            <input type="text" class="search-box" id="search-box" placeholder="वीडियो खोजें...">
+        </div>
+    </header>
 
+    <main class="main-content">
+        <div class="video-grid" id="video-grid"></div>
+    </main>
+
+    <div class="video-player-fullscreen" id="video-player">
+        <div class="player-header">
+            <div class="player-title" id="player-title"></div>
+            <button class="close-btn" id="close-video-btn">बंद करें</button>
+        </div>
+        <div class="video-container" id="video-container"></div>
+    </div>
+
+    <script>
+        const videoData = [
+            {
+                id: 1,
+                title: "बेचारी लड़की और अमीर CEO",
+                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/1.mp4",
+                thumbnail: "https://i.ytimg.com/vi/EvmNyS8YJK4/maxresdefault.jpg",
+                type: "direct"
+            },
+            {
+                id: 2,
+                title: "Hugging Face वीडियो - एपिसोड 1",
+                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/1.mp4",
+                thumbnail: "https://i.ytimg.com/vi/EvmNyS8YJK4/maxresdefault.jpg",
+                type: "direct"
+            }
+        ];
+        
+        const videoGrid = document.getElementById('video-grid');
+        const videoPlayer = document.getElementById('video-player');
+        const videoContainer = document.getElementById('video-container');
+        const playerTitle = document.getElementById('player-title');
+        const closeVideoBtn = document.getElementById('close-video-btn');
+        const searchBox = document.getElementById('search-box');
+
+        function generateVideoGrid(videos = videoData) {
+            videoGrid.innerHTML = '';
+            videos.forEach(video => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <div class="thumbnail-container">
+                        <img src="${video.thumbnail}" class="thumbnail">
+                        <div class="play-icon">▶</div>
+                    </div>
+                    <div class="video-title">${video.title}</div>
+                `;
+                videoCard.addEventListener('click', () => playVideo(video));
+                videoGrid.appendChild(videoCard);
+            });
+        }
+
+        function playVideo(video) {
+            videoContainer.innerHTML = '';
+            playerTitle.textContent = video.title;
+            
+            let videoElement;
+            if (video.type === 'youtube') {
+                videoElement = document.createElement('iframe');
+                videoElement.className = 'youtube-video';
+                videoElement.src = video.videoUrl; // यहाँ आप एम्बेड फंक्शन जोड़ सकते हैं
+                videoElement.allowFullscreen = true;
+            } else {
+                videoElement = document.createElement('video');
+                videoElement.className = 'direct-video';
+                videoElement.src = video.videoUrl;
+                videoElement.controls = true;
+                videoElement.autoplay = true;
+                videoElement.playsInline = true;
+            }
+            
+            videoContainer.appendChild(videoElement);
+            videoPlayer.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        closeVideoBtn.addEventListener('click', () => {
+            videoPlayer.style.display = 'none';
+            videoContainer.innerHTML = '';
+            document.body.style.overflow = 'auto';
+        });
+
+        generateVideoGrid();
+    </script>
 </body>
 </html>
