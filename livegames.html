@@ -2,37 +2,870 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>#</title>
-
-    <meta name="description" content="#">
-    <meta name="keywords" content="#">
-    <meta name="author" content="">
-
-    <link rel="icon" type="image/x-icon" href="#">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>रंगीन स्नेक गेम</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        iframe {
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #ff8a00, #da1b60, #00b4db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #a8e6cf;
+            margin-bottom: 10px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .score-container, .high-score-container {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px 20px;
+            border-radius: 15px;
+            flex: 1;
+            text-align: center;
+            margin: 0 5px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .score-label, .high-score-label {
+            font-size: 0.9rem;
+            color: #80deea;
+        }
+        
+        .score, .high-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: #0a1929;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 3px solid #00b4db;
+        }
+        
+        #game-canvas {
             width: 100%;
             height: 100%;
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .direction-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+        }
+        
+        .control-btn {
+            background: linear-gradient(145deg, #4a00e0, #8e2de2);
             border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.1s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .control-btn.up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .control-btn.down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        
+        .control-btn.left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .control-btn.right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .start-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+        
+        .pause-btn {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, #00b4db, #0083b0);
+            color: white;
+        }
+        
+        .action-btn:active {
+            transform: translateY(3px);
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            margin-top: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .instructions h3 {
+            color: #80deea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            color: #e0f7fa;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .game-over {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 10px;
+        }
+        
+        .game-over h2 {
+            font-size: 3rem;
+            color: #ff5252;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 82, 82, 0.7);
+        }
+        
+        .final-score {
+            font-size: 2rem;
+            color: #ffeb3b;
+            margin-bottom: 30px;
+        }
+        
+        .restart-btn {
+            padding: 15px 30px;
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .restart-btn:active {
+            transform: translateY(3px);
+        }
+        
+        .mobile-warning {
+            display: none;
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #ffeb3b;
+        }
+        
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .score, .high-score {
+                font-size: 1.7rem;
+            }
+            
+            .direction-controls {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .control-btn {
+                font-size: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .action-btn {
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+            
+            .mobile-warning {
+                display: block;
+            }
+        }
+        
+        @media (max-height: 850px) {
+            .container {
+                gap: 10px;
+            }
+            
+            .header {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* स्नेक और खाने के रंगों के लिए एनीमेशन */
+        @keyframes foodGlow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes snakeGlow {
+            0% { box-shadow: 0 0 5px #4caf50; }
+            50% { box-shadow: 0 0 15px #4caf50; }
+            100% { box-shadow: 0 0 5px #4caf50; }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="mobile-warning">
+            <i class="fas fa-mobile-alt"></i> मोबाइल के लिए अनुकूलित - नियंत्रण बटनों का उपयोग करें
+        </div>
+        
+        <div class="header">
+            <h1><i class="fas fa-gamepad"></i> स्नेक गेम</h1>
+            <p class="subtitle">साँप को नियंत्रित करें और खाना इकट्ठा करें!</p>
+            
+            <div class="game-info">
+                <div class="score-container">
+                    <div class="score-label">स्कोर</div>
+                    <div class="score">0</div>
+                </div>
+                <div class="high-score-container">
+                    <div class="high-score-label">उच्चतम स्कोर</div>
+                    <div class="high-score">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-container">
+            <canvas id="game-canvas"></canvas>
+            
+            <div class="game-over">
+                <h2>गेम समाप्त!</h2>
+                <div class="final-score">आपका स्कोर: <span id="final-score">0</span></div>
+                <button class="restart-btn" id="restart-btn">
+                    <i class="fas fa-redo"></i> दोबारा खेलें
+                </button>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="direction-controls">
+                <button class="control-btn up" id="up-btn">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+                <button class="control-btn down" id="down-btn">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+                <button class="control-btn left" id="left-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="control-btn right" id="right-btn">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn start-btn" id="start-btn">
+                    <i class="fas fa-play"></i> शुरू करें
+                </button>
+                <button class="action-btn pause-btn" id="pause-btn">
+                    <i class="fas fa-pause"></i> रोकें
+                </button>
+                <button class="action-btn reset-btn" id="reset-btn">
+                    <i class="fas fa-undo"></i> रीसेट करें
+                </button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> खेल निर्देश:</h3>
+            <ul>
+                <li>साँप को नियंत्रित करने के लिए तीर बटनों या स्वाइप का उपयोग करें</li>
+                <li>लाल खाना इकट्ठा करके अपने स्कोर को बढ़ाएं</li>
+                <li>दीवारों या अपने शरीर से टकराने से बचें</li>
+                <li>प्रत्येक खाना खाने पर साँप की लंबाई बढ़ जाएगी</li>
+                <li>जितना अधिक खाना इकट्ठा करेंगे, गति उतनी ही तेज होगी</li>
+            </ul>
+        </div>
+    </div>
 
-    <iframe src="https://zv1y2i8p.play.gamezop.com/_game-files/UCS62KJ8c/index.html?sub=01KGC8J39NHP61JNT3ETC6GKN9&amp;id=zv1Y2I8P&amp;lang=en&amp;user-journey-group=2025-preload-games"></iframe>
-
+    <script>
+        // गेम वेरिएबल्स
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.querySelector('.score');
+        const highScoreElement = document.querySelector('.high-score');
+        const finalScoreElement = document.getElementById('final-score');
+        const gameOverScreen = document.querySelector('.game-over');
+        
+        // बटन तत्व
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const upBtn = document.getElementById('up-btn');
+        const downBtn = document.getElementById('down-btn');
+        const leftBtn = document.getElementById('left-btn');
+        const rightBtn = document.getElementById('right-btn');
+        
+        // गेम सेटिंग्स
+        const gridSize = 20;
+        let gridWidth, gridHeight;
+        let gameSpeed = 120; // मिलीसेकंड में
+        let gameLoop;
+        let isPaused = false;
+        let isGameOver = false;
+        let score = 0;
+        let highScore = localStorage.getItem('snakeHighScore') || 0;
+        
+        // उच्चतम स्कोर सेट करें
+        highScoreElement.textContent = highScore;
+        
+        // साँप और खाना
+        let snake = [];
+        let food = {};
+        let direction = 'right';
+        let nextDirection = 'right';
+        
+        // कैनवास आकार सेट करें
+        function setupCanvas() {
+            const container = document.querySelector('.game-container');
+            const size = Math.min(container.clientWidth, container.clientHeight);
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            gridWidth = Math.floor(canvas.width / gridSize);
+            gridHeight = Math.floor(canvas.height / gridSize);
+            
+            // गेम रीसेट करें
+            resetGame();
+        }
+        
+        // गेम शुरू करें
+        function startGame() {
+            if (isGameOver) {
+                resetGame();
+            }
+            
+            if (gameLoop) {
+                clearInterval(gameLoop);
+            }
+            
+            isPaused = false;
+            startBtn.innerHTML = '<i class="fas fa-play"></i> शुरू करें';
+            gameLoop = setInterval(updateGame, gameSpeed);
+        }
+        
+        // गेम रोकें/जारी रखें
+        function togglePause() {
+            if (isGameOver) return;
+            
+            isPaused = !isPaused;
+            
+            if (isPaused) {
+                clearInterval(gameLoop);
+                pauseBtn.innerHTML = '<i class="fas fa-play"></i> जारी रखें';
+            } else {
+                gameLoop = setInterval(updateGame, gameSpeed);
+                pauseBtn.innerHTML = '<i class="fas fa-pause"></i> रोकें';
+            }
+        }
+        
+        // गेम रीसेट करें
+        function resetGame() {
+            // साँप को केंद्र में शुरू करें
+            snake = [
+                {x: Math.floor(gridWidth / 2), y: Math.floor(gridHeight / 2)},
+                {x: Math.floor(gridWidth / 2) - 1, y: Math.floor(gridHeight / 2)},
+                {x: Math.floor(gridWidth / 2) - 2, y: Math.floor(gridHeight / 2)}
+            ];
+            
+            // दिशा रीसेट करें
+            direction = 'right';
+            nextDirection = 'right';
+            
+            // स्कोर रीसेट करें
+            score = 0;
+            scoreElement.textContent = score;
+            
+            // गति रीसेट करें
+            gameSpeed = 120;
+            
+            // गेम ओवर स्क्रीन छिपाएं
+            gameOverScreen.style.display = 'none';
+            isGameOver = false;
+            
+            // नया खाना बनाएं
+            generateFood();
+            
+            // गेम बोर्ड बनाएं
+            drawGame();
+        }
+        
+        // खाना बनाएं
+        function generateFood() {
+            // यह सुनिश्चित करें कि खाना साँप पर न बने
+            let foodOnSnake;
+            do {
+                foodOnSnake = false;
+                food = {
+                    x: Math.floor(Math.random() * gridWidth),
+                    y: Math.floor(Math.random() * gridHeight)
+                };
+                
+                // जांचें कि क्या खाना साँप के शरीर पर है
+                for (let segment of snake) {
+                    if (segment.x === food.x && segment.y === food.y) {
+                        foodOnSnake = true;
+                        break;
+                    }
+                }
+            } while (foodOnSnake);
+        }
+        
+        // गेम अपडेट करें
+        function updateGame() {
+            if (isPaused || isGameOver) return;
+            
+            // दिशा अपडेट करें
+            direction = nextDirection;
+            
+            // साँप का नया सिर बनाएं
+            const head = {...snake[0]};
+            
+            // दिशा के अनुसार सिर को आगे बढ़ाएं
+            switch(direction) {
+                case 'up': head.y -= 1; break;
+                case 'down': head.y += 1; break;
+                case 'left': head.x -= 1; break;
+                case 'right': head.x += 1; break;
+            }
+            
+            // दीवारों से टकराने की जांच करें
+            if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
+                gameOver();
+                return;
+            }
+            
+            // स्वयं से टकराने की जांच करें
+            for (let segment of snake) {
+                if (head.x === segment.x && head.y === segment.y) {
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // साँप के सिर को जोड़ें
+            snake.unshift(head);
+            
+            // खाना खाने की जांच करें
+            if (head.x === food.x && head.y === food.y) {
+                // स्कोर बढ़ाएं
+                score += 10;
+                scoreElement.textContent = score;
+                
+                // उच्चतम स्कोर अपडेट करें
+                if (score > highScore) {
+                    highScore = score;
+                    highScoreElement.textContent = highScore;
+                    localStorage.setItem('snakeHighScore', highScore);
+                }
+                
+                // गति बढ़ाएं (कुछ हद तक)
+                if (gameSpeed > 70) {
+                    gameSpeed -= 2;
+                    clearInterval(gameLoop);
+                    gameLoop = setInterval(updateGame, gameSpeed);
+                }
+                
+                // नया खाना बनाएं
+                generateFood();
+            } else {
+                // यदि खाना नहीं खाया गया है, तो पूंछ हटाएं
+                snake.pop();
+            }
+            
+            // गेम बोर्ड बनाएं
+            drawGame();
+        }
+        
+        // गेम बोर्ड बनाएं
+        function drawGame() {
+            // पृष्ठभूमि
+            ctx.fillStyle = '#0a1929';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // ग्रिड बनाएं
+            ctx.strokeStyle = '#1a3a5a';
+            ctx.lineWidth = 0.5;
+            
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // खाना बनाएं
+            ctx.fillStyle = '#ff5252';
+            ctx.beginPath();
+            ctx.arc(
+                food.x * gridSize + gridSize/2,
+                food.y * gridSize + gridSize/2,
+                gridSize/2 - 1,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+            
+            // खाने पर ग्लो प्रभाव
+            ctx.shadowColor = '#ff5252';
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // साँप बनाएं
+            for (let i = 0; i < snake.length; i++) {
+                const segment = snake[i];
+                
+                // सिर के लिए अलग रंग
+                if (i === 0) {
+                    ctx.fillStyle = '#4caf50'; // सिर हरा
+                } else {
+                    // शरीर के लिए ग्रेडिएंट रंग
+                    const gradient = ctx.createLinearGradient(
+                        segment.x * gridSize,
+                        segment.y * gridSize,
+                        segment.x * gridSize + gridSize,
+                        segment.y * gridSize + gridSize
+                    );
+                    gradient.addColorStop(0, '#8bc34a');
+                    gradient.addColorStop(1, '#4caf50');
+                    ctx.fillStyle = gradient;
+                }
+                
+                // गोल कोने वाला आयत बनाएं
+                const x = segment.x * gridSize + 1;
+                const y = segment.y * gridSize + 1;
+                const width = gridSize - 2;
+                const height = gridSize - 2;
+                const radius = 4;
+                
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.lineTo(x + width - radius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                ctx.lineTo(x + width, y + height - radius);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                ctx.lineTo(x + radius, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+                ctx.lineTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.closePath();
+                ctx.fill();
+                
+                // सिर पर आँखें बनाएं
+                if (i === 0) {
+                    ctx.fillStyle = 'white';
+                    // दिशा के अनुसार आँखें
+                    let eye1X, eye1Y, eye2X, eye2Y;
+                    
+                    if (direction === 'right') {
+                        eye1X = x + width - 6;
+                        eye1Y = y + 6;
+                        eye2X = x + width - 6;
+                        eye2Y = y + height - 6;
+                    } else if (direction === 'left') {
+                        eye1X = x + 6;
+                        eye1Y = y + 6;
+                        eye2X = x + 6;
+                        eye2Y = y + height - 6;
+                    } else if (direction === 'up') {
+                        eye1X = x + 6;
+                        eye1Y = y + 6;
+                        eye2X = x + width - 6;
+                        eye2Y = y + 6;
+                    } else { // down
+                        eye1X = x + 6;
+                        eye1Y = y + height - 6;
+                        eye2X = x + width - 6;
+                        eye2Y = y + height - 6;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(eye1X, eye1Y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(eye2X, eye2Y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        
+        // गेम ओवर
+        function gameOver() {
+            isGameOver = true;
+            clearInterval(gameLoop);
+            
+            // फाइनल स्कोर दिखाएं
+            finalScoreElement.textContent = score;
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        // दिशा बदलें
+        function changeDirection(newDirection) {
+            // विपरीत दिशा में जाने से रोकें
+            if (
+                (newDirection === 'up' && direction !== 'down') ||
+                (newDirection === 'down' && direction !== 'up') ||
+                (newDirection === 'left' && direction !== 'right') ||
+                (newDirection === 'right' && direction !== 'left')
+            ) {
+                nextDirection = newDirection;
+            }
+        }
+        
+        // टच स्वाइप के लिए इवेंट हैंडलर
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }
+        
+        function handleTouchMove(e) {
+            if (!touchStartX || !touchStartY || isPaused) return;
+            
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+            
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+            
+            // यदि ऊर्ध्वाधर स्वाइप अधिक है
+            if (Math.abs(diffY) > Math.abs(diffX)) {
+                if (diffY > 0) {
+                    // ऊपर स्वाइप
+                    changeDirection('up');
+                } else {
+                    // नीचे स्वाइप
+                    changeDirection('down');
+                }
+            } else {
+                if (diffX > 0) {
+                    // बाएं स्वाइप
+                    changeDirection('left');
+                } else {
+                    // दाएं स्वाइप
+                    changeDirection('right');
+                }
+            }
+            
+            // रीसेट टच पॉइंट
+            touchStartX = 0;
+            touchStartY = 0;
+        }
+        
+        // कीबोर्ड नियंत्रण
+        function handleKeyDown(e) {
+            if (isPaused && e.key !== ' ') return;
+            
+            switch(e.key) {
+                case 'ArrowUp': changeDirection('up'); break;
+                case 'ArrowDown': changeDirection('down'); break;
+                case 'ArrowLeft': changeDirection('left'); break;
+                case 'ArrowRight': changeDirection('right'); break;
+                case ' ': togglePause(); break;
+            }
+        }
+        
+        // ईवेंट लिसनर सेट करें
+        function setupEventListeners() {
+            // बटन क्लिक
+            startBtn.addEventListener('click', startGame);
+            pauseBtn.addEventListener('click', togglePause);
+            resetBtn.addEventListener('click', resetGame);
+            restartBtn.addEventListener('click', resetGame);
+            
+            // दिशा बटन
+            upBtn.addEventListener('click', () => changeDirection('up'));
+            downBtn.addEventListener('click', () => changeDirection('down'));
+            leftBtn.addEventListener('click', () => changeDirection('left'));
+            rightBtn.addEventListener('click', () => changeDirection('right'));
+            
+            // कीबोर्ड नियंत्रण
+            document.addEventListener('keydown', handleKeyDown);
+            
+            // टच नियंत्रण
+            canvas.addEventListener('touchstart', handleTouchStart, {passive: true});
+            canvas.addEventListener('touchmove', handleTouchMove, {passive: true});
+            
+            // विंडो रीसाइज
+            window.addEventListener('resize', setupCanvas);
+        }
+        
+        // पृष्ठ लोड होने पर गेम शुरू करें
+        window.onload = function() {
+            setupCanvas();
+            setupEventListeners();
+            drawGame();
+            
+            // गेम शुरू करने के लिए एक संक्षिप्त निर्देश दिखाएं
+            setTimeout(() => {
+                alert("स्नेक गेम में आपका स्वागत है! गेम शुरू करने के लिए 'शुरू करें' बटन दबाएं। मोबाइल पर स्वाइप करें या नियंत्रण बटनों का उपयोग करें।");
+            }, 500);
+        };
+    </script>
 </body>
 </html>
