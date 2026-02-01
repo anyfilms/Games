@@ -126,7 +126,7 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            padding: 15px;
+            padding: 12px 15px;
             background: rgba(0, 0, 0, 0.4);
             border-radius: 15px;
             border: 2px solid rgba(255, 255, 255, 0.1);
@@ -137,12 +137,14 @@
             color: white;
             border: none;
             border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 1rem;
+            padding: 10px;
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             transition: all 0.3s;
         }
         
@@ -152,26 +154,66 @@
         
         .score-display {
             display: flex;
-            gap: 20px;
+            gap: 10px;
         }
         
         .score-box, .high-score-box {
             background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             text-align: center;
             border: 2px solid rgba(255, 255, 255, 0.1);
+            min-width: 80px;
         }
         
         .score-label, .high-score-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #80deea;
         }
         
         .score, .high-score {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #ffeb3b;
+        }
+        
+        .game-controls-top {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .game-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+        
+        .game-btn:active {
+            transform: translateY(3px);
+        }
+        
+        .start-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+        
+        .pause-btn {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, #00b4db, #0083b0);
+            color: white;
         }
         
         .game-container {
@@ -183,6 +225,7 @@
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             border: 3px solid #00b4db;
+            margin-top: 10px;
         }
         
         #game-canvas {
@@ -196,7 +239,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 20px;
         }
         
         .direction-controls {
@@ -247,47 +290,6 @@
         .control-btn.right {
             grid-column: 3;
             grid-row: 2;
-        }
-        
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 20px;
-            gap: 15px;
-        }
-        
-        .action-btn {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .start-btn {
-            background: linear-gradient(to right, #00b09b, #96c93d);
-            color: white;
-        }
-        
-        .pause-btn {
-            background: linear-gradient(to right, #ff8a00, #da1b60);
-            color: white;
-        }
-        
-        .reset-btn {
-            background: linear-gradient(to right, #00b4db, #0083b0);
-            color: white;
-        }
-        
-        .action-btn:active {
-            transform: translateY(3px);
         }
         
         .game-over {
@@ -364,7 +366,28 @@
             }
             
             .score, .high-score {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+            }
+            
+            .score-box, .high-score-box {
+                padding: 6px 10px;
+                min-width: 70px;
+            }
+            
+            .score-label, .high-score-label {
+                font-size: 0.7rem;
+            }
+            
+            .game-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                gap: 4px;
+            }
+            
+            .back-btn {
+                width: 40px;
+                height: 40px;
+                padding: 8px;
             }
             
             .direction-controls {
@@ -374,18 +397,6 @@
             
             .control-btn {
                 font-size: 1.5rem;
-            }
-            
-            .action-buttons {
-                flex-wrap: wrap;
-            }
-            
-            .action-btn {
-                flex: 1;
-                min-width: 140px;
-                justify-content: center;
-                padding: 12px 20px;
-                font-size: 1rem;
             }
             
             .mobile-warning {
@@ -398,6 +409,27 @@
             
             .instructions h3 {
                 font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .game-header {
+                padding: 10px;
+                gap: 8px;
+            }
+            
+            .game-btn {
+                padding: 8px 10px;
+                font-size: 0.75rem;
+            }
+            
+            .score, .high-score {
+                font-size: 1.2rem;
+            }
+            
+            .score-box, .high-score-box {
+                min-width: 65px;
+                padding: 5px 8px;
             }
         }
         
@@ -461,8 +493,8 @@
     <!-- गेम स्क्रीन -->
     <div class="screen game-screen" id="game-screen">
         <div class="game-header">
-            <button class="back-btn" id="back-btn">
-                <i class="fas fa-arrow-left"></i> HOME
+            <button class="back-btn" id="back-btn" title="Home">
+                <i class="fas fa-arrow-left"></i>
             </button>
             
             <div class="score-display">
@@ -476,7 +508,17 @@
                 </div>
             </div>
         </div>
-        
+        <div class="game-controls-top">
+                <button class="game-btn start-btn" id="top-start-btn">
+                    <i class="fas fa-play"></i> <span class="btn-text">START</span>
+                </button>
+                <button class="game-btn pause-btn" id="top-pause-btn">
+                    <i class="fas fa-pause"></i> <span class="btn-text">PAUSE</span>
+                </button>
+                <button class="game-btn reset-btn" id="top-reset-btn">
+                    <i class="fas fa-undo"></i> <span class="btn-text">RESET</span>
+                </button>
+            </div>
         <div class="game-container">
             <canvas id="game-canvas"></canvas>
             
@@ -504,18 +546,6 @@
                     <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
-            
-            <div class="action-buttons">
-                <button class="action-btn start-btn" id="start-btn">
-                    <i class="fas fa-play"></i> START
-                </button>
-                <button class="action-btn pause-btn" id="pause-btn">
-                    <i class="fas fa-pause"></i> PAUSE
-                </button>
-                <button class="action-btn reset-btn" id="reset-btn">
-                    <i class="fas fa-undo"></i> RESET
-                </button>
-            </div>
         </div>
     </div>
 
@@ -535,9 +565,9 @@
         // बटन तत्व
         const playBtn = document.getElementById('play-btn');
         const backBtn = document.getElementById('back-btn');
-        const startBtn = document.getElementById('start-btn');
-        const pauseBtn = document.getElementById('pause-btn');
-        const resetBtn = document.getElementById('reset-btn');
+        const topStartBtn = document.getElementById('top-start-btn');
+        const topPauseBtn = document.getElementById('top-pause-btn');
+        const topResetBtn = document.getElementById('top-reset-btn');
         const restartBtn = document.getElementById('restart-btn');
         const upBtn = document.getElementById('up-btn');
         const downBtn = document.getElementById('down-btn');
@@ -608,8 +638,8 @@
             }
             
             isPaused = false;
-            startBtn.innerHTML = '<i class="fas fa-play"></i> START';
-            pauseBtn.innerHTML = '<i class="fas fa-pause"></i> PAUSE';
+            topStartBtn.innerHTML = '<i class="fas fa-play"></i> <span class="btn-text">START</span>';
+            topPauseBtn.innerHTML = '<i class="fas fa-pause"></i> <span class="btn-text">PAUSE</span>';
             gameLoop = setInterval(updateGame, gameSpeed);
         }
         
@@ -621,10 +651,10 @@
             
             if (isPaused) {
                 clearInterval(gameLoop);
-                pauseBtn.innerHTML = '<i class="fas fa-play"></i> RESUME';
+                topPauseBtn.innerHTML = '<i class="fas fa-play"></i> <span class="btn-text">RESUME</span>';
             } else {
                 gameLoop = setInterval(updateGame, gameSpeed);
-                pauseBtn.innerHTML = '<i class="fas fa-pause"></i> PAUSE';
+                topPauseBtn.innerHTML = '<i class="fas fa-pause"></i> <span class="btn-text">PAUSE</span>';
             }
         }
         
@@ -948,9 +978,9 @@
         // ईवेंट लिसनर सेट करें
         function setupEventListeners() {
             // बटन क्लिक
-            startBtn.addEventListener('click', startGame);
-            pauseBtn.addEventListener('click', togglePause);
-            resetBtn.addEventListener('click', resetGame);
+            topStartBtn.addEventListener('click', startGame);
+            topPauseBtn.addEventListener('click', togglePause);
+            topResetBtn.addEventListener('click', resetGame);
             restartBtn.addEventListener('click', resetGame);
             
             // दिशा बटन
