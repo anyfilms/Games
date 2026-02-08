@@ -100,8 +100,8 @@ body.light-mode .comment {
 }
 
 .channel-item img{
- width:45px;height:45px;border-radius:50%;
- margin-right:15px
+ width:100px;height:100px;border-radius:50%;
+ margin-right:35px
 }
 
 /* MAIN CONTAINER - रिस्पॉन्सिव के लिए */
@@ -441,43 +441,43 @@ video{
 const videos = [
  {
   id: 6,
-  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
+  title: "गरीब युवक की पत्नी ने धोखा दिया, मगर अद्भुत मोबाइल मिला,भविष्य से बात करके करोड़पति बनकर पलटवार किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/6.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/6.jpg",
-  channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+  channel: "पत्नी ने धोखा दिया",
+  icon: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/dhookha.png",
  },
  {
   id: 5,
-  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
+  title: "गरीब युवक खर्च सिस्टम जागृत, सुंदरी को पैसे देकर 90 हजार करोड़ नकद, अरबपति बनकर पलटवार!",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/5.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/5.jpg",
-  channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+  channel: "सिस्टम जागृत",
+  icon: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/sistam.png",
  },
  {
   id: 4,
-  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
+  title: "परिवार ने पालतू बेटे के लिए मुझे जेल भेजा, अरबपति में पुनर्जन्म लिया, संबंध तोड़कर कड़ा बदला लूंगा!",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/4.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/4.jpg",
-  channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+  channel: "पुनर्जन्म",
+  icon: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/punarjanm.png",
  },
  {
   id: 7,
-  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
+  title: "तीन भाई पालतू बेटी से प्यार करते हुए मुझे मार दिए, पुनर्जन्म, संबंध तोड़ा, कड़ा बदला लूंगा!",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/3.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/3.jpg",
-  channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+  channel: "पुनर्जन्म",
+  icon: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/punarjanm.png",
  },
  {
   id: 2,
   title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/2.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/2.jpg",
-  channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+  channel: "पुनर्जन्म",
+  icon: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/punarjanm.png",
  },
  {
   id: 8,
@@ -524,10 +524,10 @@ function loadTheme() {
     
     if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
-        themeBtn.textContent = '🌞';
+        themeBtn.textContent = '';//🌞
     } else {
         document.body.classList.remove('light-mode');
-        themeBtn.textContent = '🌓';
+        themeBtn.textContent = '';//🌓
     }
 }
 
