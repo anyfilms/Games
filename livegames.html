@@ -1,284 +1,214 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>वीडियो प्लेयर</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        
-        body {
-            background-color: #000;
-            color: #fff;
-            overflow-x: hidden;
-        }
-        
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #111;
-            padding: 15px;
-            z-index: 100;
-            border-bottom: 1px solid #333;
-        }
-        
-        .search-container {
-            display: flex;
-            align-items: center;
-        }
-        
-        .search-box {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 25px;
-            background-color: #222;
-            border: 1px solid #333;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-        }
-        
-        .main-content {
-            margin-top: 70px;
-            padding: 10px;
-        }
-        
-        .video-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        
-        .video-card {
-            background-color: #111;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .thumbnail-container {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .thumbnail {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .play-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        .video-title {
-            padding: 12px;
-            font-size: 16px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video App</title>
 
-        /* प्लेयर को बेहतर बनाने के लिए CSS सुधार */
-        .video-player-fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-        }
-        
-        .player-header {
-            padding: 15px;
-            background-color: #111;
-            display: flex;
-            align-items: center;
-            z-index: 1001;
-        }
-        
-        .player-title {
-            flex: 1;
-            font-size: 14px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .close-btn {
-            background: #333;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            padding: 5px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .video-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* बाहर निकलने से रोकेगा */
-        }
-        
-        /* वीडियो फिटिंग के लिए मुख्य सेटिंग */
-        .direct-video, .youtube-video {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        @media (min-width: 480px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 768px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
-    </style>
+<style>
+body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:Arial, sans-serif;
+}
+header{
+    position:fixed;
+    top:0;
+    width:100%;
+    background:#111;
+    padding:12px;
+    z-index:10;
+}
+header input{
+    width:100%;
+    padding:12px;
+    border-radius:25px;
+    border:none;
+    background:#222;
+    color:#fff;
+    font-size:15px;
+}
+.feed{
+    padding-top:70px;
+}
+.card{
+    margin-bottom:25px;
+}
+.thumb{
+    width:100%;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    cursor:pointer;
+}
+.info{
+    display:flex;
+    padding:10px;
+}
+.channel-icon{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    margin-right:10px;
+}
+.text{
+    flex:1;
+}
+.title{
+    font-size:15px;
+    line-height:1.3;
+    max-height:2.6em;
+    overflow:hidden;
+}
+.meta{
+    font-size:12px;
+    color:#aaa;
+    margin-top:4px;
+}
+.player{
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:none;
+    flex-direction:column;
+    z-index:100;
+}
+.player video{
+    width:100%;
+    max-height:60vh;
+}
+.actions{
+    display:flex;
+    justify-content:space-around;
+    padding:12px;
+    border-top:1px solid #222;
+    font-size:14px;
+}
+.actions button{
+    background:none;
+    border:none;
+    color:#fff;
+}
+.close{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#222;
+    border:none;
+    color:#fff;
+    padding:6px 10px;
+    border-radius:6px;
+}
+</style>
 </head>
+
 <body>
 
-    <header class="header">
-        <div class="search-container">
-            <input type="text" class="search-box" id="search-box" placeholder="वीडियो खोजें...">
-        </div>
-    </header>
+<header>
+<input type="text" placeholder="Search video..." onkeyup="search(this.value)">
+</header>
 
-    <main class="main-content">
-        <div class="video-grid" id="video-grid"></div>
-    </main>
+<div class="feed" id="feed"></div>
 
-    <div class="video-player-fullscreen" id="video-player">
-        <div class="player-header">
-            <div class="player-title" id="player-title"></div>
-            <button class="close-btn" id="close-video-btn">बंद करें</button>
-        </div>
-        <div class="video-container" id="video-container"></div>
+<div class="player" id="player">
+<button class="close" onclick="closePlayer()">✕</button>
+<video id="video" controls autoplay playsinline></video>
+<div class="actions">
+    <button onclick="likeVideo()">👍 <span id="likes">0</span></button>
+    <div>👁 <span id="views">0</span></div>
+</div>
+</div>
+
+<script>
+// ================= VIDEO DATA =================
+const videos = [
+{
+ id:1,
+ title:"गरीब युवक की पत्नी ने धोखा दिया, मगर अद्भुत मोबाइल मिला, भविष्य से बात करके करोड़पति बनकर पलटवार किया",
+ videoUrl:"https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/6.mp4",
+ thumbnail:"https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/6.jpg",
+ channelName:"Drama World",
+ channelIcon:"https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
+},
+{
+ id:2,
+ title:"परिवार ने पालतू बेटे के लिए मुझे जेल भेजा, अरबपति में पुनर्जन्म लिया",
+ videoUrl:"https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/5.mp4",
+ thumbnail:"https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/5.jpg",
+ channelName:"Story Hub",
+ channelIcon:"https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+}
+];
+
+// ================= STORAGE =================
+function getStore(id){
+ return JSON.parse(localStorage.getItem("video_"+id)) || {views:0,likes:0};
+}
+function setStore(id,data){
+ localStorage.setItem("video_"+id,JSON.stringify(data));
+}
+
+// ================= RENDER =================
+const feed=document.getElementById("feed");
+function render(list=videos){
+ feed.innerHTML="";
+ list.forEach(v=>{
+  const s=getStore(v.id);
+  const div=document.createElement("div");
+  div.className="card";
+  div.innerHTML=`
+   <img class="thumb" src="${v.thumbnail}">
+   <div class="info">
+    <img class="channel-icon" src="${v.channelIcon}">
+    <div class="text">
+     <div class="title">${v.title}</div>
+     <div class="meta">${v.channelName} • ${s.views} views</div>
     </div>
+   </div>`;
+  div.onclick=()=>openVideo(v);
+  feed.appendChild(div);
+ });
+}
 
-    <script>
-        const videoData = [
-           
-            {
-                id: 1,
-                title: "गरीब युवक की पत्नी ने धोखा दिया, मगर अद्भुत मोबाइल मिला,भविष्य से बात करके करोड़पति बनकर पलटवार किया",
-                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/6.mp4",
-                thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/6.jpg",
-                type: "direct"
-            },{
-                id: 1,
-                title: "गरीब युवक खर्च सिस्टम जागृत, सुंदरी को पैसे देकर 90 हजार करोड़ नकद, अरबपति बनकर पलटवार!",
-                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/5.mp4",
-                thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/5.jpg",
-                type: "direct"
-            },{
-                id: 1,
-                title: "परिवार ने पालतू बेटे के लिए मुझे जेल भेजा, अरबपति में पुनर्जन्म लिया, संबंध तोड़कर कड़ा बदला लूंगा!",
-                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/4.mp4",
-                thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/4.jpg",
-                type: "direct"
-            },
-            {
-                id: 1,
-                title: "तीन भाई पालतू बेटी से प्यार करते हुए मुझे मार दिए, पुनर्जन्म, संबंध तोड़ा, कड़ा बदला लूंगा!",
-                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/3.mp4",
-                thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/3.jpg",
-                type: "direct"
-            },
-            {
-                id: 1,
-                title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया, सब कुछ वापस ले लिया!",
-                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/2.mp4",
-                thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/2.jpg",
-                type: "direct"
-            },
-            {
-                id: 2,
-                title: "Hugging Face वीडियो - एपिसोड 1",
-                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/1.mp4",
-                thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/1.jpg",
-                type: "direct"
-            }
-        ];
-        
-        const videoGrid = document.getElementById('video-grid');
-        const videoPlayer = document.getElementById('video-player');
-        const videoContainer = document.getElementById('video-container');
-        const playerTitle = document.getElementById('player-title');
-        const closeVideoBtn = document.getElementById('close-video-btn');
-        const searchBox = document.getElementById('search-box');
+// ================= PLAYER =================
+let current=null;
+const player=document.getElementById("player");
+const videoEl=document.getElementById("video");
+const viewsEl=document.getElementById("views");
+const likesEl=document.getElementById("likes");
 
-        function generateVideoGrid(videos = videoData) {
-            videoGrid.innerHTML = '';
-            videos.forEach(video => {
-                const videoCard = document.createElement('div');
-                videoCard.className = 'video-card';
-                videoCard.innerHTML = `
-                    <div class="thumbnail-container">
-                        <img src="${video.thumbnail}" class="thumbnail">
-                        <div class="play-icon">▶</div>
-                    </div>
-                    <div class="video-title">${video.title}</div>
-                `;
-                videoCard.addEventListener('click', () => playVideo(video));
-                videoGrid.appendChild(videoCard);
-            });
-        }
+function openVideo(v){
+ current=v;
+ let s=getStore(v.id);
+ s.views++;                // ✅ views play पर count
+ setStore(v.id,s);
+ viewsEl.textContent=s.views;
+ likesEl.textContent=s.likes;
+ videoEl.src=v.videoUrl;
+ player.style.display="flex";
+ render();
+}
 
-        function playVideo(video) {
-            videoContainer.innerHTML = '';
-            playerTitle.textContent = video.title;
-            
-            let videoElement;
-            if (video.type === 'youtube') {
-                videoElement = document.createElement('iframe');
-                videoElement.className = 'youtube-video';
-                videoElement.src = video.videoUrl; // यहाँ आप एम्बेड फंक्शन जोड़ सकते हैं
-                videoElement.allowFullscreen = true;
-            } else {
-                videoElement = document.createElement('video');
-                videoElement.className = 'direct-video';
-                videoElement.src = video.videoUrl;
-                videoElement.controls = true;
-                videoElement.autoplay = true;
-                videoElement.playsInline = true;
-            }
-            
-            videoContainer.appendChild(videoElement);
-            videoPlayer.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
+function likeVideo(){
+ let s=getStore(current.id);
+ s.likes++;
+ setStore(current.id,s);
+ likesEl.textContent=s.likes;
+}
 
-        closeVideoBtn.addEventListener('click', () => {
-            videoPlayer.style.display = 'none';
-            videoContainer.innerHTML = '';
-            document.body.style.overflow = 'auto';
-        });
+function closePlayer(){
+ player.style.display="none";
+ videoEl.pause();
+}
 
-        generateVideoGrid();
-    </script>
+// ================= SEARCH =================
+function search(q){
+ q=q.toLowerCase();
+ render(videos.filter(v=>v.title.toLowerCase().includes(q)));
+}
+
+render();
+</script>
+
 </body>
 </html>
