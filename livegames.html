@@ -3,1017 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>स्नेक गेम</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>वीडियो प्लेयर</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-color: #000;
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 15px;
             overflow-x: hidden;
-            touch-action: manipulation;
         }
         
-        /* स्क्रीन स्टाइल */
-        .screen {
-            display: none;
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+            background-color: #111;
+            padding: 15px;
+            z-index: 100;
+            border-bottom: 1px solid #333;
         }
         
-        .screen.active {
-            display: flex;
-        }
-        
-        /* होम स्क्रीन */
-        .home-screen {
-            text-align: center;
-        }
-        
-        .logo-container {
-            margin: 20px 0;
-        }
-        
-        .logo {
-            font-size: 4rem;
-            background: linear-gradient(to right, #ff8a00, #da1b60, #00b4db);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-        
-        .game-title {
-            font-size: 3rem;
-            background: linear-gradient(to right, #00b09b, #96c93d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        .play-btn {
-            background: linear-gradient(to right, #00b09b, #96c93d);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 20px 60px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 40px 0;
+        .search-container {
             display: flex;
             align-items: center;
-            gap: 15px;
-            transition: all 0.3s;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
         
-        .play-btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .instructions {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 20px;
-            padding: 25px;
-            width: 100%;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        .instructions h3 {
-            color: #80deea;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-            color: #e0f7fa;
-        }
-        
-        .instructions li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        
-        /* गेम स्क्रीन */
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .search-box {
             width: 100%;
             padding: 12px 15px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            background-color: #222;
+            border: 1px solid #333;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
         }
         
-        .back-btn {
-            background: linear-gradient(to right, #ff8a00, #da1b60);
-            color: white;
-            border: none;
-            border-radius: 10px;
+        .main-content {
+            margin-top: 70px;
             padding: 10px;
-            width: 45px;
-            height: 45px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
         }
         
-        .back-btn:active {
-            transform: translateY(3px);
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
         
-        .score-display {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .score-box, .high-score-box {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 12px;
+        .video-card {
+            background-color: #111;
             border-radius: 8px;
-            text-align: center;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            min-width: 80px;
-        }
-        
-        .score-label, .high-score-label {
-            font-size: 0.8rem;
-            color: #80deea;
-        }
-        
-        .score, .high-score {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #ffeb3b;
-        }
-        
-        .game-controls-top {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .game-btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-            white-space: nowrap;
-        }
-        
-        .game-btn:active {
-            transform: translateY(3px);
-        }
-        
-        .start-btn {
-            background: linear-gradient(to right, #00b09b, #96c93d);
-            color: white;
-        }
-        
-        .pause-btn {
-            background: linear-gradient(to right, #ff8a00, #da1b60);
-            color: white;
-        }
-        
-        .reset-btn {
-            background: linear-gradient(to right, #00b4db, #0083b0);
-            color: white;
-        }
-        
-        .game-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background-color: #0a1929;
-            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            border: 3px solid #00b4db;
-            margin-top: 10px;
+            cursor: pointer;
         }
         
-        #game-canvas {
+        .thumbnail-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .thumbnail {
             width: 100%;
             height: 100%;
-            display: block;
+            object-fit: cover;
         }
         
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-top: 20px;
-        }
-        
-        .direction-controls {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 10px;
-            width: 220px;
-            height: 220px;
-            margin: 0 auto;
-        }
-        
-        .control-btn {
-            background: linear-gradient(145deg, #4a00e0, #8e2de2);
-            border: none;
-            border-radius: 15px;
-            color: white;
-            font-size: 1.8rem;
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.1s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-size: 24px;
         }
         
-        .control-btn:active {
-            transform: scale(0.92);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        .video-title {
+            padding: 12px;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
-        .control-btn.up {
-            grid-column: 2;
-            grid-row: 1;
-        }
-        
-        .control-btn.down {
-            grid-column: 2;
-            grid-row: 3;
-        }
-        
-        .control-btn.left {
-            grid-column: 1;
-            grid-row: 2;
-        }
-        
-        .control-btn.right {
-            grid-column: 3;
-            grid-row: 2;
-        }
-        
-        .game-over {
-            position: absolute;
+
+        /* प्लेयर को बेहतर बनाने के लिए CSS सुधार */
+        .video-player-fullscreen {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
             display: none;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            border-radius: 10px;
         }
         
-        .game-over h2 {
-            font-size: 3rem;
-            color: #ff5252;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 82, 82, 0.7);
-        }
-        
-        .final-score {
-            font-size: 2rem;
-            color: #ffeb3b;
-            margin-bottom: 30px;
-        }
-        
-        .restart-btn {
-            padding: 15px 30px;
-            background: linear-gradient(to right, #00b09b, #96c93d);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
+        .player-header {
+            padding: 15px;
+            background-color: #111;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
         }
         
-        .restart-btn:active {
-            transform: translateY(3px);
+        .player-title {
+            flex: 1;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .close-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
         }
         
-        .mobile-warning {
-            display: none;
-            background: rgba(255, 193, 7, 0.2);
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 15px;
-            color: #ffeb3b;
+        .video-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* बाहर निकलने से रोकेगा */
         }
         
-        @media (max-width: 500px) {
-            .game-title {
-                font-size: 2.2rem;
-            }
-            
-            .logo {
-                font-size: 3rem;
-            }
-            
-            .play-btn {
-                padding: 18px 50px;
-                font-size: 1.5rem;
-            }
-            
-            .score, .high-score {
-                font-size: 1.3rem;
-            }
-            
-            .score-box, .high-score-box {
-                padding: 6px 10px;
-                min-width: 70px;
-            }
-            
-            .score-label, .high-score-label {
-                font-size: 0.7rem;
-            }
-            
-            .game-btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-                gap: 4px;
-            }
-            
-            .back-btn {
-                width: 40px;
-                height: 40px;
-                padding: 8px;
-            }
-            
-            .direction-controls {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .control-btn {
-                font-size: 1.5rem;
-            }
-            
-            .mobile-warning {
-                display: block;
-            }
-            
-            .instructions {
-                padding: 20px;
-            }
-            
-            .instructions h3 {
-                font-size: 1.3rem;
-            }
+        /* वीडियो फिटिंग के लिए मुख्य सेटिंग */
+        .direct-video, .youtube-video {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
-        
-        @media (max-width: 400px) {
-            .game-header {
-                padding: 10px;
-                gap: 8px;
-            }
-            
-            .game-btn {
-                padding: 8px 10px;
-                font-size: 0.75rem;
-            }
-            
-            .score, .high-score {
-                font-size: 1.2rem;
-            }
-            
-            .score-box, .high-score-box {
-                min-width: 65px;
-                padding: 5px 8px;
-            }
-        }
-        
-        @media (max-height: 700px) {
-            .home-screen {
-                gap: 15px;
-            }
-            
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .game-title {
-                font-size: 2rem;
-            }
-            
-            .play-btn {
-                margin: 20px 0;
-                padding: 15px 40px;
-                font-size: 1.3rem;
-            }
-            
-            .instructions {
-                padding: 15px;
-            }
-        }
+
+        @media (min-width: 480px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 768px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
     </style>
 </head>
 <body>
-    <!-- होम स्क्रीन -->
-    <div class="screen home-screen active" id="home-screen">
-        <div class="mobile-warning">
-            <i class="fas fa-mobile-alt"></i> Optimized for mobile - Use control buttons
+
+    <header class="header">
+        <div class="search-container">
+            <input type="text" class="search-box" id="search-box" placeholder="वीडियो खोजें...">
         </div>
-        
-        <div class="logo-container">
-            <div class="logo">
-                <i class="fas fa-gamepad"></i>
-            </div>
-            <h1 class="game-title">SNAKE GAME</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="video-grid" id="video-grid"></div>
+    </main>
+
+    <div class="video-player-fullscreen" id="video-player">
+        <div class="player-header">
+            <div class="player-title" id="player-title"></div>
+            <button class="close-btn" id="close-video-btn">बंद करें</button>
         </div>
-        
-        <button class="play-btn" id="play-btn">
-            <i class="fas fa-play"></i> PLAY GAME
-        </button>
-        
-        <div class="instructions">
-            <h3><i class="fas fa-info-circle"></i> GAME INSTRUCTIONS:</h3>
-            <ul>
-                <li>Use arrow buttons or swipe to control the snake</li>
-                <li>Collect red food to increase your score</li>
-                <li>Avoid colliding with your own body</li>
-                <li>Each food collected increases the snake's length</li>
-                <li>Game speed increases as you collect more food</li>
-                <li>Snake can pass through walls (wrap-around)</li>
-                <li>Game ends only when snake collides with itself</li>
-            </ul>
-        </div>
-    </div>
-    
-    <!-- गेम स्क्रीन -->
-    <div class="screen game-screen" id="game-screen">
-        <div class="game-header">
-            <button class="back-btn" id="back-btn" title="Home">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            
-            <div class="score-display">
-                <div class="score-box">
-                    <div class="score-label">SCORE</div>
-                    <div class="score">0</div>
-                </div>
-                <div class="high-score-box">
-                    <div class="high-score-label">HIGH SCORE</div>
-                    <div class="high-score">0</div>
-                </div>
-            </div>
-        </div>
-        <div class="game-controls-top">
-                <button class="game-btn start-btn" id="top-start-btn">
-                    <i class="fas fa-play"></i> <span class="btn-text">START</span>
-                </button>
-                <button class="game-btn pause-btn" id="top-pause-btn">
-                    <i class="fas fa-pause"></i> <span class="btn-text">PAUSE</span>
-                </button>
-                <button class="game-btn reset-btn" id="top-reset-btn">
-                    <i class="fas fa-undo"></i> <span class="btn-text">RESET</span>
-                </button>
-            </div>
-        <div class="game-container">
-            <canvas id="game-canvas"></canvas>
-            
-            <div class="game-over" id="game-over">
-                <h2>GAME OVER!</h2>
-                <div class="final-score">Your Score: <span id="final-score">0</span></div>
-                <button class="restart-btn" id="restart-btn">
-                    <i class="fas fa-redo"></i> PLAY AGAIN
-                </button>
-            </div>
-        </div>
-        
-        <div class="controls">
-            <div class="direction-controls">
-                <button class="control-btn up" id="up-btn">
-                    <i class="fas fa-arrow-up"></i>
-                </button>
-                <button class="control-btn down" id="down-btn">
-                    <i class="fas fa-arrow-down"></i>
-                </button>
-                <button class="control-btn left" id="left-btn">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <button class="control-btn right" id="right-btn">
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
+        <div class="video-container" id="video-container"></div>
     </div>
 
     <script>
-        // गेम वेरिएबल्स
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.querySelector('.score');
-        const highScoreElement = document.querySelector('.high-score');
-        const finalScoreElement = document.getElementById('final-score');
-        const gameOverScreen = document.getElementById('game-over');
-        
-        // स्क्रीन तत्व
-        const homeScreen = document.getElementById('home-screen');
-        const gameScreen = document.getElementById('game-screen');
-        
-        // बटन तत्व
-        const playBtn = document.getElementById('play-btn');
-        const backBtn = document.getElementById('back-btn');
-        const topStartBtn = document.getElementById('top-start-btn');
-        const topPauseBtn = document.getElementById('top-pause-btn');
-        const topResetBtn = document.getElementById('top-reset-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const upBtn = document.getElementById('up-btn');
-        const downBtn = document.getElementById('down-btn');
-        const leftBtn = document.getElementById('left-btn');
-        const rightBtn = document.getElementById('right-btn');
-        
-        // गेम सेटिंग्स
-        const gridSize = 20;
-        let gridWidth, gridHeight;
-        let gameSpeed = 120; // मिलीसेकंड में
-        let gameLoop;
-        let isPaused = false;
-        let isGameOver = false;
-        let score = 0;
-        let highScore = localStorage.getItem('snakeHighScore') || 0;
-        
-        // उच्चतम स्कोर सेट करें
-        highScoreElement.textContent = highScore;
-        
-        // साँप और खाना
-        let snake = [];
-        let food = {};
-        let direction = 'right';
-        let nextDirection = 'right';
-        
-        // स्क्रीन स्विच करें
-        playBtn.addEventListener('click', () => {
-            homeScreen.classList.remove('active');
-            gameScreen.classList.add('active');
-            setupCanvas();
-            drawGame();
-        });
-        
-        backBtn.addEventListener('click', () => {
-            gameScreen.classList.remove('active');
-            homeScreen.classList.add('active');
-            
-            // गेम रोकें
-            if (gameLoop) {
-                clearInterval(gameLoop);
-                gameLoop = null;
+        const videoData = [
+           
+            {
+                id: 1,
+                title: "Hugging Face वीडियो - एपिसोड 1",
+                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/2.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                type: "direct"
+            },
+            {
+                id: 2,
+                title: "Hugging Face वीडियो - एपिसोड 1",
+                videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/3.mp4",
+                thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                type: "direct"
             }
-        });
+        ];
         
-        // कैनवास आकार सेट करें
-        function setupCanvas() {
-            const container = document.querySelector('.game-container');
-            const size = Math.min(container.clientWidth, container.clientHeight);
-            
-            canvas.width = size;
-            canvas.height = size;
-            
-            gridWidth = Math.floor(canvas.width / gridSize);
-            gridHeight = Math.floor(canvas.height / gridSize);
-            
-            // गेम रीसेट करें
-            resetGame();
-        }
-        
-        // गेम शुरू करें
-        function startGame() {
-            if (isGameOver) {
-                resetGame();
-            }
-            
-            if (gameLoop) {
-                clearInterval(gameLoop);
-            }
-            
-            isPaused = false;
-            topStartBtn.innerHTML = '<i class="fas fa-play"></i> <span class="btn-text">START</span>';
-            topPauseBtn.innerHTML = '<i class="fas fa-pause"></i> <span class="btn-text">PAUSE</span>';
-            gameLoop = setInterval(updateGame, gameSpeed);
-        }
-        
-        // गेम रोकें/जारी रखें
-        function togglePause() {
-            if (isGameOver) return;
-            
-            isPaused = !isPaused;
-            
-            if (isPaused) {
-                clearInterval(gameLoop);
-                topPauseBtn.innerHTML = '<i class="fas fa-play"></i> <span class="btn-text">RESUME</span>';
-            } else {
-                gameLoop = setInterval(updateGame, gameSpeed);
-                topPauseBtn.innerHTML = '<i class="fas fa-pause"></i> <span class="btn-text">PAUSE</span>';
-            }
-        }
-        
-        // गेम रीसेट करें
-        function resetGame() {
-            // साँप को केंद्र में शुरू करें
-            snake = [
-                {x: Math.floor(gridWidth / 2), y: Math.floor(gridHeight / 2)},
-                {x: Math.floor(gridWidth / 2) - 1, y: Math.floor(gridHeight / 2)},
-                {x: Math.floor(gridWidth / 2) - 2, y: Math.floor(gridHeight / 2)}
-            ];
-            
-            // दिशा रीसेट करें
-            direction = 'right';
-            nextDirection = 'right';
-            
-            // स्कोर रीसेट करें
-            score = 0;
-            scoreElement.textContent = score;
-            
-            // गति रीसेट करें
-            gameSpeed = 250;
-            
-            // गेम ओवर स्क्रीन छिपाएं
-            gameOverScreen.style.display = 'none';
-            isGameOver = false;
-            
-            // नया खाना बनाएं
-            generateFood();
-            
-            // गेम बोर्ड बनाएं
-            drawGame();
-        }
-        
-        // खाना बनाएं
-        function generateFood() {
-            // यह सुनिश्चित करें कि खाना साँप पर न बने
-            let foodOnSnake;
-            do {
-                foodOnSnake = false;
-                food = {
-                    x: Math.floor(Math.random() * gridWidth),
-                    y: Math.floor(Math.random() * gridHeight)
-                };
-                
-                // जांचें कि क्या खाना साँप के शरीर पर है
-                for (let segment of snake) {
-                    if (segment.x === food.x && segment.y === food.y) {
-                        foodOnSnake = true;
-                        break;
-                    }
-                }
-            } while (foodOnSnake);
-        }
-        
-        // गेम अपडेट करें
-        function updateGame() {
-            if (isPaused || isGameOver) return;
-            
-            // दिशा अपडेट करें
-            direction = nextDirection;
-            
-            // साँप का नया सिर बनाएं
-            const head = {...snake[0]};
-            
-            // दिशा के अनुसार सिर को आगे बढ़ाएं
-            switch(direction) {
-                case 'up': head.y -= 1; break;
-                case 'down': head.y += 1; break;
-                case 'left': head.x -= 1; break;
-                case 'right': head.x += 1; break;
-            }
-            
-            // व्रैप-अराउंड इफेक्ट (दीवारों से टकराने पर दूसरी तरफ निकल जाना)
-            if (head.x < 0) head.x = gridWidth - 1;
-            if (head.x >= gridWidth) head.x = 0;
-            if (head.y < 0) head.y = gridHeight - 1;
-            if (head.y >= gridHeight) head.y = 0;
-            
-            // स्वयं से टकराने की जांच करें (यही एकमात्र गेम ओवर कंडीशन है)
-            for (let segment of snake) {
-                if (head.x === segment.x && head.y === segment.y) {
-                    gameOver();
-                    return;
-                }
-            }
-            
-            // साँप के सिर को जोड़ें
-            snake.unshift(head);
-            
-            // खाना खाने की जांच करें
-            if (head.x === food.x && head.y === food.y) {
-                // स्कोर बढ़ाएं
-                score += 10;
-                scoreElement.textContent = score;
-                
-                // उच्चतम स्कोर अपडेट करें
-                if (score > highScore) {
-                    highScore = score;
-                    highScoreElement.textContent = highScore;
-                    localStorage.setItem('snakeHighScore', highScore);
-                }
-                
-                // गति बढ़ाएं (कुछ हद तक)
-                if (gameSpeed > 70) {
-                    gameSpeed -= 2;
-                    clearInterval(gameLoop);
-                    gameLoop = setInterval(updateGame, gameSpeed);
-                }
-                
-                // नया खाना बनाएं
-                generateFood();
-            } else {
-                // यदि खाना नहीं खाया गया है, तो पूंछ हटाएं
-                snake.pop();
-            }
-            
-            // गेम बोर्ड बनाएं
-            drawGame();
-        }
-        
-        // गेम बोर्ड बनाएं
-        function drawGame() {
-            // पृष्ठभूमि
-            ctx.fillStyle = '#0a1929';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // ग्रिड बनाएं
-            ctx.strokeStyle = '#1a3a5a';
-            ctx.lineWidth = 0.5;
-            
-            for (let x = 0; x < canvas.width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
-            }
-            
-            for (let y = 0; y < canvas.height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-            
-            // खाना बनाएं
-            ctx.fillStyle = '#ff5252';
-            ctx.beginPath();
-            ctx.arc(
-                food.x * gridSize + gridSize/2,
-                food.y * gridSize + gridSize/2,
-                gridSize/2 - 1,
-                0,
-                Math.PI * 2
-            );
-            ctx.fill();
-            
-            // खाने पर ग्लो प्रभाव
-            ctx.shadowColor = '#ff5252';
-            ctx.shadowBlur = 10;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // साँप बनाएं
-            for (let i = 0; i < snake.length; i++) {
-                const segment = snake[i];
-                
-                // सिर के लिए अलग रंग
-                if (i === 0) {
-                    ctx.fillStyle = '#4caf50'; // सिर हरा
-                } else {
-                    // शरीर के लिए ग्रेडिएंट रंग
-                    const gradient = ctx.createLinearGradient(
-                        segment.x * gridSize,
-                        segment.y * gridSize,
-                        segment.x * gridSize + gridSize,
-                        segment.y * gridSize + gridSize
-                    );
-                    gradient.addColorStop(0, '#8bc34a');
-                    gradient.addColorStop(1, '#4caf50');
-                    ctx.fillStyle = gradient;
-                }
-                
-                // गोल कोने वाला आयत बनाएं
-                const x = segment.x * gridSize + 1;
-                const y = segment.y * gridSize + 1;
-                const width = gridSize - 2;
-                const height = gridSize - 2;
-                const radius = 4;
-                
-                ctx.beginPath();
-                ctx.moveTo(x + radius, y);
-                ctx.lineTo(x + width - radius, y);
-                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-                ctx.lineTo(x + width, y + height - radius);
-                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-                ctx.lineTo(x + radius, y + height);
-                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-                ctx.lineTo(x, y + radius);
-                ctx.quadraticCurveTo(x, y, x + radius, y);
-                ctx.closePath();
-                ctx.fill();
-                
-                // सिर पर आँखें बनाएं
-                if (i === 0) {
-                    ctx.fillStyle = 'white';
-                    // दिशा के अनुसार आँखें
-                    let eye1X, eye1Y, eye2X, eye2Y;
-                    
-                    if (direction === 'right') {
-                        eye1X = x + width - 6;
-                        eye1Y = y + 6;
-                        eye2X = x + width - 6;
-                        eye2Y = y + height - 6;
-                    } else if (direction === 'left') {
-                        eye1X = x + 6;
-                        eye1Y = y + 6;
-                        eye2X = x + 6;
-                        eye2Y = y + height - 6;
-                    } else if (direction === 'up') {
-                        eye1X = x + 6;
-                        eye1Y = y + 6;
-                        eye2X = x + width - 6;
-                        eye2Y = y + 6;
-                    } else { // down
-                        eye1X = x + 6;
-                        eye1Y = y + height - 6;
-                        eye2X = x + width - 6;
-                        eye2Y = y + height - 6;
-                    }
-                    
-                    ctx.beginPath();
-                    ctx.arc(eye1X, eye1Y, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    ctx.beginPath();
-                    ctx.arc(eye2X, eye2Y, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-        }
-        
-        // गेम ओवर
-        function gameOver() {
-            isGameOver = true;
-            clearInterval(gameLoop);
-            
-            // फाइनल स्कोर दिखाएं
-            finalScoreElement.textContent = score;
-            gameOverScreen.style.display = 'flex';
-        }
-        
-        // दिशा बदलें
-        function changeDirection(newDirection) {
-            // विपरीत दिशा में जाने से रोकें
-            if (
-                (newDirection === 'up' && direction !== 'down') ||
-                (newDirection === 'down' && direction !== 'up') ||
-                (newDirection === 'left' && direction !== 'right') ||
-                (newDirection === 'right' && direction !== 'left')
-            ) {
-                nextDirection = newDirection;
-            }
-        }
-        
-        // टच स्वाइप के लिए इवेंट हैंडलर
-        let touchStartX = 0;
-        let touchStartY = 0;
-        
-        function handleTouchStart(e) {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }
-        
-        function handleTouchMove(e) {
-            if (!touchStartX || !touchStartY || isPaused) return;
-            
-            const touchEndX = e.touches[0].clientX;
-            const touchEndY = e.touches[0].clientY;
-            
-            const diffX = touchStartX - touchEndX;
-            const diffY = touchStartY - touchEndY;
-            
-            // यदि ऊर्ध्वाधर स्वाइप अधिक है
-            if (Math.abs(diffY) > Math.abs(diffX)) {
-                if (diffY > 0) {
-                    // ऊपर स्वाइप
-                    changeDirection('up');
-                } else {
-                    // नीचे स्वाइप
-                    changeDirection('down');
-                }
-            } else {
-                if (diffX > 0) {
-                    // बाएं स्वाइप
-                    changeDirection('left');
-                } else {
-                    // दाएं स्वाइप
-                    changeDirection('right');
-                }
-            }
-            
-            // रीसेट टच पॉइंट
-            touchStartX = 0;
-            touchStartY = 0;
-        }
-        
-        // कीबोर्ड नियंत्रण
-        function handleKeyDown(e) {
-            if (isPaused && e.key !== ' ') return;
-            
-            switch(e.key) {
-                case 'ArrowUp': changeDirection('up'); break;
-                case 'ArrowDown': changeDirection('down'); break;
-                case 'ArrowLeft': changeDirection('left'); break;
-                case 'ArrowRight': changeDirection('right'); break;
-                case ' ': togglePause(); break;
-            }
-        }
-        
-        // ईवेंट लिसनर सेट करें
-        function setupEventListeners() {
-            // बटन क्लिक
-            topStartBtn.addEventListener('click', startGame);
-            topPauseBtn.addEventListener('click', togglePause);
-            topResetBtn.addEventListener('click', resetGame);
-            restartBtn.addEventListener('click', resetGame);
-            
-            // दिशा बटन
-            upBtn.addEventListener('click', () => changeDirection('up'));
-            downBtn.addEventListener('click', () => changeDirection('down'));
-            leftBtn.addEventListener('click', () => changeDirection('left'));
-            rightBtn.addEventListener('click', () => changeDirection('right'));
-            
-            // कीबोर्ड नियंत्रण
-            document.addEventListener('keydown', handleKeyDown);
-            
-            // टच नियंत्रण
-            canvas.addEventListener('touchstart', handleTouchStart, {passive: true});
-            canvas.addEventListener('touchmove', handleTouchMove, {passive: true});
-            
-            // विंडो रीसाइज
-            window.addEventListener('resize', () => {
-                if (gameScreen.classList.contains('active')) {
-                    setupCanvas();
-                    drawGame();
-                }
+        const videoGrid = document.getElementById('video-grid');
+        const videoPlayer = document.getElementById('video-player');
+        const videoContainer = document.getElementById('video-container');
+        const playerTitle = document.getElementById('player-title');
+        const closeVideoBtn = document.getElementById('close-video-btn');
+        const searchBox = document.getElementById('search-box');
+
+        function generateVideoGrid(videos = videoData) {
+            videoGrid.innerHTML = '';
+            videos.forEach(video => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <div class="thumbnail-container">
+                        <img src="${video.thumbnail}" class="thumbnail">
+                        <div class="play-icon">▶</div>
+                    </div>
+                    <div class="video-title">${video.title}</div>
+                `;
+                videoCard.addEventListener('click', () => playVideo(video));
+                videoGrid.appendChild(videoCard);
             });
         }
-        
-        // पृष्ठ लोड होने पर इवेंट लिसनर सेट करें
-        window.onload = function() {
-            setupEventListeners();
+
+        function playVideo(video) {
+            videoContainer.innerHTML = '';
+            playerTitle.textContent = video.title;
             
-            // होम स्क्रीन पर संक्षिप्त निर्देश दिखाएं
-            setTimeout(() => {
-                alert("Welcome to Snake Game! Tap the PLAY GAME button to start. Use swipe or control buttons on mobile.");
-            }, 500);
-        };
+            let videoElement;
+            if (video.type === 'youtube') {
+                videoElement = document.createElement('iframe');
+                videoElement.className = 'youtube-video';
+                videoElement.src = video.videoUrl; // यहाँ आप एम्बेड फंक्शन जोड़ सकते हैं
+                videoElement.allowFullscreen = true;
+            } else {
+                videoElement = document.createElement('video');
+                videoElement.className = 'direct-video';
+                videoElement.src = video.videoUrl;
+                videoElement.controls = true;
+                videoElement.autoplay = true;
+                videoElement.playsInline = true;
+            }
+            
+            videoContainer.appendChild(videoElement);
+            videoPlayer.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        closeVideoBtn.addEventListener('click', () => {
+            videoPlayer.style.display = 'none';
+            videoContainer.innerHTML = '';
+            document.body.style.overflow = 'auto';
+        });
+
+        generateVideoGrid();
     </script>
 </body>
 </html>
