@@ -356,56 +356,57 @@ video{
 </div>
 
 <script>
-// वीडियो डेटा - अब 10 वीडियो
+// वीडियो डेटा - 10 वीडियो
 const videos = [
+ 
  {
-  id: 0,
-  title: "गरीब युवक की पत्नी ने धोखा दिया, मगर भविष्य से बात करके करोड़पति बना",
+  id: 6,
+  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/6.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/6.jpg",
   channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
  },
  {
-  id: 0,
-  title: "अरबपति में पुनर्जन्म, परिवार को कड़ा जवाब",
+  id: 5,
+  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/5.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/5.jpg",
-  channel: "Action Drama",
-  icon: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+  channel: "Drama TV Official",
+  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
  },
  {
-  id: 0,
-  title: "परिवार ने पालतू बेटे के लिए मुझे जेल भेजा, अरबपति में पुनर्जन्म लिया",
+  id: 4,
+  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/4.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/4.jpg",
   channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
  },
  {
-  id: 0,
-  title: "तीन भाई पालतू बेटी से प्यार करते हुए मुझे मार दिए, पुनर्जन्म, संबंध तोड़ा",
+  id: 7,
+  title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/3.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/3.jpg",
-  channel: "Romantic Drama",
-  icon: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+  channel: "Drama TV Official",
+  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
  },
  {
-  id: 0,
+  id: 2,
   title: "अनपसंद बेटी में पुनर्जन्म लिया, दुष्ट पिता व पालतू बेटी को उजागर किया",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/2.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/2.jpg",
   channel: "Drama TV Official",
-  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+  icon: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
  },
  {
-  id: 0,
+  id: 8,
   title: "Hugging Face वीडियो - एपिसोड 1",
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/1.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/1.jpg",
   channel: "Action Drama",
-  icon: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
- }
+  icon: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+ },
 ];
 
 const feed = document.getElementById("feed");
@@ -417,6 +418,9 @@ const commentList = document.getElementById("commentList");
 const loading = document.getElementById("loading");
 let current = null;
 
+// यह सुनिश्चित करेगा कि व्यू काउंट केवल एक बार बढ़े
+let hasViewed = {};
+
 /* STORAGE */
 function store(id) {
  return JSON.parse(localStorage.getItem("v_" + id)) || {views: 0, likes: 0, comments: []};
@@ -426,16 +430,36 @@ function save(id, data) {
  localStorage.setItem("v_" + id, JSON.stringify(data));
 }
 
-/* RENDER */
+/* RENDER - डुप्लीकेट ठीक करने के लिए */
+let isRendering = false;
+let currentVideoList = videos; // वर्तमान में दिखाई जाने वाली वीडियो लिस्ट
+
 function render(list = videos) {
+ if (isRendering) return;
+ isRendering = true;
+ 
+ // सुनिश्चित करें कि list एक array है और duplicate ID नहीं हैं
+ const uniqueVideos = [];
+ const seenIds = new Set();
+ 
+ for (const video of list) {
+  if (!seenIds.has(video.id)) {
+   seenIds.add(video.id);
+   uniqueVideos.push(video);
+  }
+ }
+ 
+ // वर्तमान लिस्ट अपडेट करें
+ currentVideoList = uniqueVideos;
+ 
  feed.innerHTML = "";
  
  // लोडिंग दिखाएं
  loading.classList.add('active');
  
- // थोड़ी देर बाद वीडियो दिखाएं (सिमुलेशन के लिए)
+ // थोड़ी देर बाद वीडियो दिखाएं
  setTimeout(() => {
-  list.forEach(v => {
+  uniqueVideos.forEach(v => {
    const s = store(v.id);
    const div = document.createElement("div");
    div.className = "video-card";
@@ -455,29 +479,44 @@ function render(list = videos) {
   
   // लोडिंग छिपाएं
   loading.classList.remove('active');
+  isRendering = false;
  }, 500);
 }
 
-/* PLAYER */
+/* PLAYER - व्यू काउंट केवल वीडियो प्ले होने पर बढ़े */
 function openVideo(id) {
  current = videos.find(v => v.id === id);
- let s = store(id);
- s.views++;
- save(id, s);
+ let s = store(current.id);
  
+ // व्यू काउंट डिस्प्ले करें (अभी न बढ़ाएं)
  viewsEl.innerText = s.views;
  likesEl.innerText = s.likes;
  document.getElementById("playerTitle").innerText = current.title;
  videoEl.src = current.videoUrl;
  
+ // व्यू काउंट बढ़ाने के लिए इवेंट लिसनर
+ videoEl.onplay = function() {
+  // यदि पहले से व्यू नहीं किया गया है तो ही काउंट बढ़ाएं
+  if (!hasViewed[current.id]) {
+   let s = store(current.id);
+   s.views++;
+   save(current.id, s);
+   viewsEl.innerText = s.views;
+   hasViewed[current.id] = true;
+   
+   // फीड अपडेट करें
+   setTimeout(() => {
+    render(currentVideoList);
+   }, 100);
+  }
+ };
+ 
  renderComments();
  player.style.display = "flex";
  document.body.style.overflow = "hidden";
  
- // वीडियो प्ले होने पर फीड अपडेट करें
- setTimeout(() => {
-  render(videos);
- }, 100);
+ // वीडियो प्ले होने पर व्यू काउंट बढ़ाने के लिए फ्लैग रीसेट
+ hasViewed[current.id] = false;
 }
 
 function closePlayer() {
@@ -495,7 +534,7 @@ function like() {
  
  // फीड अपडेट करें
  setTimeout(() => {
-  render(videos);
+  render(currentVideoList);
  }, 100);
 }
 
@@ -524,11 +563,6 @@ function addComment(e) {
   save(current.id, s);
   e.target.value = "";
   renderComments();
-  
-  // फीड अपडेट करें
-  setTimeout(() => {
-   render(videos);
-  }, 100);
  }
 }
 
@@ -564,7 +598,9 @@ uniqueChannels.forEach(name => {
  d.className = "channel-item";
  d.innerHTML = `<img src="${v.icon}"><div>${name}</div>`;
  d.onclick = () => {
-  render(videos.filter(x => x.channel === name));
+  // डुप्लीकेट से बचने के लिए फ़िल्टर करें
+  const filteredVideos = videos.filter(x => x.channel === name);
+  render(filteredVideos);
   closeChannels();
  };
  channelList.appendChild(d);
@@ -579,16 +615,20 @@ function refreshHome() {
  // लोडिंग दिखाएं
  loading.classList.add('active');
  
+ // व्यू काउंट फ्लैग रीसेट करें
+ hasViewed = {};
+ 
  // थोड़ी देर बाद रीफ्रेश करें
  setTimeout(() => {
-  location.reload();
+  render(videos);
+  loading.classList.remove('active');
  }, 800);
 }
 
 /* WINDOW RESIZE के लिए */
 window.addEventListener('resize', function() {
  // स्क्रीन साइज बदलने पर री-रेंडर करें
- render(videos);
+ render(currentVideoList);
 });
 
 // पेज लोड होते ही रेंडर करें
