@@ -671,10 +671,10 @@ function loadTheme() {
     const themeBtn = document.querySelector('.theme-btn');
     if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
-        themeBtn.textContent = '🌞';
+        themeBtn.textContent = '';//🌞
     } else {
         document.body.classList.remove('light-mode');
-        themeBtn.textContent = '🌓';
+        themeBtn.textContent = '';//🌓
     }
 }
 
