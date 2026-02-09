@@ -100,8 +100,8 @@ body.light-mode .comment {
 }
 
 .channel-item img{
- width:100px;height:100px;border-radius:50%;
- margin-right:35px
+ width:50px;height:50px;border-radius:50%;
+ margin-right:25px
 }
 
 /* MAIN CONTAINER - रिस्पॉन्सिव के लिए */
@@ -396,7 +396,6 @@ video{
 </div>
 </header>
 
-<!-- CHANNEL POPUP -->
 <div id="channelPopup">
  <div class="popup-header">
   <button onclick="closeChannels()">←</button>
@@ -405,16 +404,14 @@ video{
  <div id="channelList"></div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="main-container">
  <div class="video-feed" id="feed"></div>
  <div class="loading" id="loading">Loading videos...</div>
 </div>
 
-<!-- PLAYER -->
 <div id="player">
  <div class="player-header">
-  <button class="back-btn" onclick="closePlayer()">←</button>
+  <button class="back-btn" onclick="closePlayer()">⛌</button>
   <div id="playerTitle"></div>
  </div>
 
@@ -426,8 +423,8 @@ video{
  </video>
 
  <div class="actions">
-  <button onclick="like()">👍 <span id="likes">0</span></button>
-  <div>👁 <span id="views">0</span></div>
+  <button onclick="like()">💛 <span id="likes">0</span></button>
+  <div>👁️ <span id="views">0</span></div>
  </div>
 
  <div class="comments">
@@ -437,7 +434,7 @@ video{
 </div>
 
 <script>
-// वीडियो डेटा - 10 वीडियो
+// वीडियो डेटा
 const videos = [
  {
   id: 27,
@@ -613,7 +610,7 @@ const videos = [
   videoUrl: "https://huggingface.co/datasets/shortdramatv/chinesedramavideo/resolve/main/4.mp4",
   thumbnail: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/4.jpg",
   channel: "पुनर्जन्म",
-  icon: "https://huggingface.co/datasets/shortdramatv/chinesedramaimage/resolve/main/punarjanm.png",
+  icon: "https://huggingface.../../shortdramatv/chinesedramaimage/resolve/main/punarjanm.png",
  },
  {
   id: 7,
@@ -649,37 +646,35 @@ const likesEl = document.getElementById("likes");
 const commentList = document.getElementById("commentList");
 const loading = document.getElementById("loading");
 let current = null;
+let savedScrollPos = 0; // स्क्रॉल पोजीशन बचाने के लिए
 
-// यह सुनिश्चित करेगा कि व्यू काउंट केवल एक बार बढ़े
+// व्यू काउंट केवल एक बार बढ़े
 let hasViewed = {};
 
-/* THEME TOGGLE FUNCTION */
+/* THEME TOGGLE */
 function toggleTheme() {
     const body = document.body;
     const themeBtn = document.querySelector('.theme-btn');
-    
     if (body.classList.contains('light-mode')) {
         body.classList.remove('light-mode');
-        themeBtn.textContent = '🌓'; // डार्क मोड आइकन
+        themeBtn.textContent = '🌓';
         localStorage.setItem('theme', 'dark');
     } else {
         body.classList.add('light-mode');
-        themeBtn.textContent = '🌞'; // लाइट मोड आइकन
+        themeBtn.textContent = '🌞';
         localStorage.setItem('theme', 'light');
     }
 }
 
-// पेज लोड होने पर थीम लोड करें
 function loadTheme() {
     const savedTheme = localStorage.getItem('theme');
     const themeBtn = document.querySelector('.theme-btn');
-    
     if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
-        themeBtn.textContent = '';//🌞
+        themeBtn.textContent = '🌞';
     } else {
         document.body.classList.remove('light-mode');
-        themeBtn.textContent = '';//🌓
+        themeBtn.textContent = '🌓';
     }
 }
 
@@ -692,92 +687,81 @@ function save(id, data) {
  localStorage.setItem("v_" + id, JSON.stringify(data));
 }
 
-/* RENDER - डुप्लीकेट ठीक करने के लिए */
+/* RENDER */
 let isRendering = false;
-let currentVideoList = videos; // वर्तमान में दिखाई जाने वाली वीडियो लिस्ट
+let currentVideoList = videos;
 
 function render(list = videos) {
  if (isRendering) return;
  isRendering = true;
- 
- // सुनिश्चित करें कि list एक array है और duplicate ID नहीं हैं
  const uniqueVideos = [];
  const seenIds = new Set();
- 
  for (const video of list) {
   if (!seenIds.has(video.id)) {
    seenIds.add(video.id);
    uniqueVideos.push(video);
   }
  }
- 
- // वर्तमान लिस्ट अपडेट करें
  currentVideoList = uniqueVideos;
- 
  feed.innerHTML = "";
- 
- // लोडिंग दिखाएं
  loading.classList.add('active');
- 
- // थोड़ी देर बाद वीडियो दिखाएं
  setTimeout(() => {
   uniqueVideos.forEach(v => {
    const s = store(v.id);
    const div = document.createElement("div");
    div.className = "video-card";
-   
+   div.id = "vcard-" + v.id; // यूनिक आईडी
    div.innerHTML = `
     <img src="${v.thumbnail}" class="thumbnail" onclick="openVideo(${v.id})">
     <div class="info">
      <img src="${v.icon}" class="channel-icon">
      <div class="text">
       <div class="title">${v.title}</div>
-      <div class="meta">${v.channel} • ${s.views} views</div>
+      <div class="meta" id="vmeta-${v.id}">${v.channel} • ${s.views} views</div>
      </div>
     </div>`;
-   
    feed.appendChild(div);
   });
-  
-  // लोडिंग छिपाएं
   loading.classList.remove('active');
   isRendering = false;
  }, 500);
 }
 
-/* PLAYER - व्यू काउंट केवल वीडियो प्ले होने पर बढ़े */
+/* SMART UPDATE (पूरे पेज को रेंडर किए बिना डेटा अपडेट करना) */
+function updateCardUI(id) {
+    const s = store(id);
+    const metaEl = document.getElementById("vmeta-" + id);
+    if (metaEl) {
+        const v = videos.find(x => x.id === id);
+        metaEl.innerText = `${v.channel} • ${s.views} views`;
+    }
+}
+
+/* PLAYER */
 function openVideo(id) {
+ // स्क्रॉल पोजीशन सेव करें
+ savedScrollPos = window.scrollY;
+ 
  current = videos.find(v => v.id === id);
  let s = store(current.id);
- 
- // व्यू काउंट डिस्प्ले करें (अभी न बढ़ाएं)
  viewsEl.innerText = s.views;
  likesEl.innerText = s.likes;
  document.getElementById("playerTitle").innerText = current.title;
  videoEl.src = current.videoUrl;
  
- // व्यू काउंट बढ़ाने के लिए इवेंट लिसनर
  videoEl.onplay = function() {
-  // यदि पहले से व्यू नहीं किया गया है तो ही काउंट बढ़ाएं
   if (!hasViewed[current.id]) {
    let s = store(current.id);
    s.views++;
    save(current.id, s);
    viewsEl.innerText = s.views;
    hasViewed[current.id] = true;
-   
-   // फीड अपडेट करें
-   setTimeout(() => {
-    render(currentVideoList);
-   }, 100);
+   updateCardUI(current.id); // सिर्फ कार्ड अपडेट करें
   }
  };
- 
  renderComments();
  player.style.display = "flex";
  document.body.style.overflow = "hidden";
- 
- // वीडियो प्ले होने पर व्यू काउंट बढ़ाने के लिए फ्लैग रीसेट
  hasViewed[current.id] = false;
 }
 
@@ -786,6 +770,8 @@ function closePlayer() {
  videoEl.src = "";
  player.style.display = "none";
  document.body.style.overflow = "auto";
+ // वापस वहीं स्क्रॉल करें जहाँ यूजर था
+ window.scrollTo(0, savedScrollPos);
 }
 
 function like() {
@@ -793,23 +779,17 @@ function like() {
  s.likes++;
  save(current.id, s);
  likesEl.innerText = s.likes;
- 
- // फीड अपडेट करें
- setTimeout(() => {
-  render(currentVideoList);
- }, 100);
+ updateCardUI(current.id);
 }
 
 /* COMMENTS */
 function renderComments() {
  commentList.innerHTML = "";
  const comments = store(current.id).comments;
- 
  if (comments.length === 0) {
-  commentList.innerHTML = "<div class='comment'>No comments yet. Be the first to comment!</div>";
+  commentList.innerHTML = "<div class='comment'>No comments yet.</div>";
   return;
  }
- 
  comments.forEach(c => {
   const d = document.createElement("div");
   d.className = "comment";
@@ -828,77 +808,34 @@ function addComment(e) {
  }
 }
 
-/* CHANNEL POPUP */
-function openChannels() {
- document.getElementById("channelPopup").classList.add("active");
-}
+/* CHANNELS */
+function openChannels() { document.getElementById("channelPopup").classList.add("active"); }
+function closeChannels() { document.getElementById("channelPopup").classList.remove("active"); }
 
-function closeChannels() {
- document.getElementById("channelPopup").classList.remove("active");
-}
-
-/* CHANNEL LIST */
 const channelList = document.getElementById("channelList");
-
-// यूनिक चैनल्स की लिस्ट बनाएं
 const uniqueChannels = [...new Set(videos.map(v => v.channel))];
-
-// "All Channels" ऑप्शन जोड़ें
 const allChannelsDiv = document.createElement("div");
 allChannelsDiv.className = "channel-item";
-allChannelsDiv.innerHTML = `<img src="https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"><div>All Channels</div>`;
-allChannelsDiv.onclick = () => {
- render(videos);
- closeChannels();
-};
+allChannelsDiv.innerHTML = `<img src="https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?w=100"><div>All Channels</div>`;
+allChannelsDiv.onclick = () => { render(videos); closeChannels(); };
 channelList.appendChild(allChannelsDiv);
 
-// बाकी चैनल्स जोड़ें
 uniqueChannels.forEach(name => {
  const v = videos.find(x => x.channel === name);
  const d = document.createElement("div");
  d.className = "channel-item";
  d.innerHTML = `<img src="${v.icon}"><div>${name}</div>`;
- d.onclick = () => {
-  // डुप्लीकेट से बचने के लिए फ़िल्टर करें
-  const filteredVideos = videos.filter(x => x.channel === name);
-  render(filteredVideos);
-  closeChannels();
- };
+ d.onclick = () => { render(videos.filter(x => x.channel === name)); closeChannels(); };
  channelList.appendChild(d);
 });
 
-/* HOME & REFRESH */
-function showAll() {
- render(videos);
-}
+function showAll() { render(videos); }
+function refreshHome() { location.reload(); }
 
-function refreshHome() {
- // लोडिंग दिखाएं
- loading.classList.add('active');
- 
- // व्यू काउंट फ्लैग रीसेट करें
- hasViewed = {};
- 
- // थोड़ी देर बाद रीफ्रेश करें
- setTimeout(() => {
-  render(videos);
-  loading.classList.remove('active');
- }, 800);
-}
-
-/* WINDOW RESIZE के लिए */
-window.addEventListener('resize', function() {
- // स्क्रीन साइज बदलने पर री-रेंडर करें
- render(currentVideoList);
-});
-
-// पेज लोड होते ही रेंडर करें और थीम लोड करें
 window.addEventListener('DOMContentLoaded', function() {
     loadTheme();
     render(videos);
 });
 </script>
-
 </body>
 </html>
